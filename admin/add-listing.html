@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin - Featured / latest listing - Barter Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="brand"><i class="bi bi-arrow-left-right"></i> Barter Hub <span class="badge text-bg-warning ms-1">Admin</span></div>
+    <div class="py-2"><a href="dashboard.html" class=""><i class="bi bi-speedometer2"></i> Dashboard</a><a href="activity.html" class=""><i class="bi bi-activity"></i> Activity log</a><a href="users.html" class=""><i class="bi bi-people"></i> Users</a><a href="items.html" class=""><i class="bi bi-box-seam"></i> Items</a><a href="submissions.html" class=""><i class="bi bi-inbox"></i> Item submissions</a><a href="exchanges.html" class=""><i class="bi bi-arrow-left-right"></i> Exchanges</a><a href="chats.html" class=""><i class="bi bi-chat-square-text"></i> Chat monitor</a><a href="searches.html" class=""><i class="bi bi-search"></i> Searches</a><a href="complaints.html" class=""><i class="bi bi-flag"></i> Reports and complaints</a><a href="categories.php" class=""><i class="bi bi-tags"></i> Categories</a><a href="payments.html" class=""><i class="bi bi-cash-coin"></i> Payments</a><a href="add-listing.html" class="active"><i class="bi bi-star"></i> Featured listing</a></div>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-top d-flex justify-content-between align-items-center">
+      <h1 class="h5 mb-0">Featured / latest listing</h1>
+      <div class="d-flex align-items-center gap-3"><span class="small text-muted"><i class="bi bi-shield-lock"></i> Admin never trades or chats</span><a class="btn btn-outline-danger btn-sm" href="login.html"><i class="bi bi-box-arrow-right"></i> Logout</a></div>
+    </div>
+    <div class="admin-content">
+
+<p class="text-muted">The admin may add a featured listing that shows in Latest items. The admin cannot create exchange requests.</p>
+<div class="card table-card" style="max-width:720px"><div class="card-body">
+  <form class="needs-validation" novalidate onsubmit="event.preventDefault(); if(this.checkValidity()){document.getElementById('listOk').classList.remove('d-none');} this.classList.add('was-validated');">
+    <div id="listOk" class="alert alert-success d-none">Featured listing saved (demo).</div>
+    <div class="mb-3"><label class="form-label">Title</label><input class="form-control" required></div>
+    <div class="row g-3 mb-3">
+      <div class="col-md-6"><label class="form-label">Category</label><select class="form-select" required><option value="">Choose...</option><option>Books</option><option>Electronics</option><option>Furniture</option><option>Clothing</option><option>Sports</option><option>Kitchen</option><option>Toys</option><option>Mobiles</option></select></div>
+      <div class="col-md-6"><label class="form-label">Show in</label><select class="form-select"><option>Featured items</option><option>Latest items</option></select></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" rows="3" required></textarea></div>
+    <button class="btn btn-primary">Save listing</button>
+  </form>
+</div></div>
+
+    </div>
+  </div>
+</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

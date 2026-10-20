@@ -1,0 +1,158 @@
+/* =========================================================
+   Barter Hub - custom styles (sits on top of Bootstrap 5)
+   Colors are defined once here, so you can re-theme the
+   whole site by changing the :root values below.
+   ========================================================= */
+:root {
+  --bh-primary: #0f766e;
+  --bh-primary-dark: #115e59;
+  --bh-accent: #f59e0b;
+  --bh-bg: #f4f7f6;
+  --bs-primary: #0f766e;
+  --bs-primary-rgb: 15, 118, 110;
+  --bs-link-color: #0f766e;
+  --bs-link-hover-color: #115e59;
+}
+
+body { background: var(--bh-bg); color: #1f2937; }
+
+/* ---- Bootstrap primary colour override ---- */
+.btn-primary {
+  --bs-btn-bg: #0f766e; --bs-btn-border-color: #0f766e;
+  --bs-btn-hover-bg: #115e59; --bs-btn-hover-border-color: #115e59;
+  --bs-btn-active-bg: #134e4a; --bs-btn-active-border-color: #134e4a;
+  --bs-btn-disabled-bg: #0f766e; --bs-btn-disabled-border-color: #0f766e;
+}
+.btn-outline-primary {
+  --bs-btn-color: #0f766e; --bs-btn-border-color: #0f766e;
+  --bs-btn-hover-bg: #0f766e; --bs-btn-hover-border-color: #0f766e;
+  --bs-btn-active-bg: #0f766e; --bs-btn-active-border-color: #0f766e;
+}
+.bg-primary { background-color: #0f766e !important; }
+.text-primary { color: #0f766e !important; }
+.form-control:focus, .form-select:focus {
+  border-color: #0f766e; box-shadow: 0 0 0 .2rem rgba(15,118,110,.18);
+}
+.form-check-input:checked { background-color: #0f766e; border-color: #0f766e; }
+
+/* ---- Navbar ---- */
+.bh-navbar { background: #fff; border-bottom: 1px solid #e5e7eb; }
+.bh-navbar .navbar-brand { font-weight: 700; color: var(--bh-primary); }
+.bh-navbar .nav-link { color: #374151; font-weight: 500; }
+.bh-navbar .nav-link:hover, .bh-navbar .nav-link.active { color: var(--bh-primary); }
+.brand-dot {
+  display: inline-flex; width: 34px; height: 34px; border-radius: 10px;
+  background: var(--bh-primary); color: #fff; align-items: center;
+  justify-content: center; margin-right: 8px; font-size: 1.1rem;
+}
+
+/* ---- Hero ---- */
+.hero {
+  background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+  color: #fff; padding: 72px 0 80px;
+}
+.hero h1 { font-weight: 800; }
+.hero .search-box { background: #fff; border-radius: 14px; padding: 8px; max-width: 640px; }
+.hero .search-box .form-control { border: 0; box-shadow: none; }
+
+/* ---- Page header (inner pages) ---- */
+.page-head { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 22px 0; }
+.page-head h1 { font-size: 1.6rem; font-weight: 700; margin: 0; }
+
+/* ---- Category tiles ---- */
+.cat-tile {
+  display: block; text-align: center; padding: 18px 8px; border-radius: 14px;
+  background: #fff; border: 1px solid #e5e7eb; color: #1f2937; text-decoration: none;
+  transition: transform .15s, box-shadow .15s;
+}
+.cat-tile:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.08); color: var(--bh-primary); }
+.cat-tile i { font-size: 1.8rem; color: var(--bh-primary); }
+
+/* ---- Item cards ---- */
+.item-card { border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+.item-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.10) !important; }
+.item-thumb { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; color: #fff; }
+.item-thumb.lg { height: 320px; font-size: 6rem; border-radius: 14px; }
+.cat-books { background: linear-gradient(135deg,#6366f1,#4338ca); }
+.cat-electronics { background: linear-gradient(135deg,#0ea5e9,#0369a1); }
+.cat-furniture { background: linear-gradient(135deg,#b45309,#78350f); }
+.cat-clothing { background: linear-gradient(135deg,#ec4899,#be185d); }
+.cat-sports { background: linear-gradient(135deg,#22c55e,#15803d); }
+.cat-kitchen { background: linear-gradient(135deg,#f97316,#c2410c); }
+.cat-toys { background: linear-gradient(135deg,#a855f7,#7e22ce); }
+.cat-mobiles { background: linear-gradient(135deg,#14b8a6,#0f766e); }
+.swap-box { background: #ecfdf5; border: 1px dashed #6ee7b7; border-radius: 10px; padding: 8px 10px; color: #065f46; }
+
+/* ---- Steps ("how it works") ---- */
+.step-circle {
+  width: 56px; height: 56px; border-radius: 50%; background: #ccfbf1; color: var(--bh-primary);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+
+/* ---- Filter sidebar ---- */
+.filter-card { border-radius: 14px; border: 1px solid #e5e7eb; position: sticky; top: 16px; }
+
+/* ---- Cards general ---- */
+.card { border-radius: 14px; }
+.stat-card { border: 0; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+.stat-card .stat-icon {
+  width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 1.4rem; background: #ccfbf1; color: var(--bh-primary);
+}
+.stat-card .stat-num { font-size: 1.7rem; font-weight: 700; line-height: 1; }
+
+/* ---- Exchange request cards ---- */
+.swap-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.swap-item { flex: 1 1 200px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; }
+.swap-arrow { font-size: 1.6rem; color: var(--bh-primary); }
+
+/* ---- Chat ---- */
+.chat-list .list-group-item { cursor: pointer; border: 0; border-bottom: 1px solid #f1f5f9; }
+.chat-list .list-group-item.active { background: #ecfdf5; color: #064e3b; border-left: 4px solid var(--bh-primary); }
+.chat-messages { height: 380px; overflow-y: auto; background: #f8fafc; padding: 16px; border-radius: 12px; }
+.bubble { max-width: 75%; padding: 8px 14px; border-radius: 16px; margin-bottom: 10px; font-size: .95rem; }
+.bubble small { display: block; opacity: .65; font-size: .72rem; margin-top: 2px; }
+.bubble.me { background: var(--bh-primary); color: #fff; margin-left: auto; border-bottom-right-radius: 4px; }
+.bubble.them { background: #fff; border: 1px solid #e5e7eb; border-bottom-left-radius: 4px; }
+
+/* ---- Star rating ---- */
+.star-rating button { background: none; border: 0; font-size: 2rem; color: #d1d5db; padding: 0 2px; }
+.star-rating button.on { color: var(--bh-accent); }
+
+/* ---- Image preview ---- */
+.preview-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.preview-grid img { width: 96px; height: 96px; object-fit: cover; border-radius: 10px; border: 1px solid #e5e7eb; }
+.upload-box { border: 2px dashed #94a3b8; border-radius: 14px; padding: 24px; text-align: center; background: #fff; }
+
+/* ---- Auth pages ---- */
+.auth-wrap { min-height: 80vh; display: flex; align-items: center; }
+.auth-card { max-width: 460px; width: 100%; margin: 0 auto; border-radius: 16px; }
+
+/* ---- Footer ---- */
+.bh-footer { background: #0b2e2b; color: #b6cfcc; }
+.bh-footer a { color: #b6cfcc; text-decoration: none; }
+.bh-footer a:hover { color: #fff; }
+
+/* ---- Admin layout ---- */
+.admin-shell { display: flex; min-height: 100vh; }
+.admin-sidebar { width: 250px; background: #0b2e2b; color: #cfe3e0; flex-shrink: 0; }
+.admin-sidebar .brand { padding: 18px 20px; font-weight: 700; color: #fff; border-bottom: 1px solid rgba(255,255,255,.08); }
+.admin-sidebar a {
+  display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #cfe3e0;
+  text-decoration: none; font-size: .95rem;
+}
+.admin-sidebar a:hover { background: rgba(255,255,255,.06); color: #fff; }
+.admin-sidebar a.active { background: rgba(245,158,11,.15); color: #fcd34d; border-left: 4px solid var(--bh-accent); padding-left: 16px; }
+.admin-main { flex: 1; min-width: 0; }
+.admin-top { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
+.admin-content { padding: 24px; }
+.table-card { border: 0; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+.table > :not(caption) > * > * { vertical-align: middle; }
+.readonly-banner { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; border-radius: 10px; padding: 8px 14px; }
+@media (max-width: 991px) {
+  .admin-shell { flex-direction: column; }
+  .admin-sidebar { width: 100%; }
+}
+
+/* ---- Coming soon ---- */
+.coming-soon { opacity: .55; filter: grayscale(.4); pointer-events: none; }

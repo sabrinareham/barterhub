@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat - Barter Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bh-navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="dashboard.html"><span class="brand-dot"><i class="bi bi-arrow-left-right"></i></span>Barter Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="browse.html">Browse</a></li>
+        <li class="nav-item"><a class="nav-link" href="add-item.html">Add item</a></li>
+        <li class="nav-item"><a class="nav-link" href="my-items.html">My items</a></li>
+        <li class="nav-item"><a class="nav-link" href="matches.html">Matches</a></li>
+        <li class="nav-item"><a class="nav-link" href="requests.html">Requests</a></li>
+        <li class="nav-item"><a class="nav-link active" href="chat.html">Chat</a></li>
+      </ul>
+      <div class="dropdown">
+        <a class="btn btn-light border dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i> Ali Raza</a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person"></i> Profile and history</a></li>
+          <li><a class="dropdown-item" href="premium.html"><i class="bi bi-gem"></i> Premium</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="../index.php"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="page-head"><div class="container"><h1>Chat</h1><p class="text-muted mb-0 mt-1">One chat for each accepted swap.</p></div></div>
+
+<div class="container py-4">
+  <div class="row g-3">
+    <div class="col-lg-4">
+      <div class="card"><div class="list-group list-group-flush chat-list">
+        <a class="list-group-item active" data-chat-target="#chat1"><div class="fw-semibold">Bilal Ahmed</div><div class="small text-muted">Speaker &#8644; Cricket Bat</div></a>
+        <a class="list-group-item" data-chat-target="#chat2"><div class="fw-semibold">Ayesha Noor</div><div class="small text-muted">Blender &#8644; Kettle <span class="badge text-bg-primary">Completed</span></div></a>
+      </div></div>
+    </div>
+    <div class="col-lg-8">
+      <div id="chat1" class="chat-panel card"><div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div><strong>Bilal Ahmed</strong><div class="small text-muted">Bluetooth Speaker &#8644; Cricket Bat</div></div>
+        <a class="btn btn-outline-success btn-sm" href="requests.html">Go to request to complete</a></div>
+        <div class="card-body"><div class="chat-messages">
+          <div class="bubble them">Hi Ali, I accepted your swap. The bat is in very good condition.<small>Bilal - 6:10 pm</small></div>
+          <div class="bubble me">Great! Can we meet near Liberty Market on Saturday?<small>You - 6:14 pm</small></div>
+          <div class="bubble them">Yes, 5 pm works for me. I will bring the bat with its cover.<small>Bilal - 6:20 pm</small></div>
+          <div class="bubble me">Perfect. I will bring the speaker and the charging cable.<small>You - 6:22 pm</small></div>
+        </div></div></div>
+      <div id="chat2" class="chat-panel card d-none"><div class="card-header bg-white"><strong>Ayesha Noor</strong><div class="small text-muted">Blender &#8644; Kettle - completed</div></div>
+        <div class="card-body"><div class="chat-messages">
+          <div class="bubble them">Thanks for the blender, it works perfectly!<small>Ayesha - 3 days ago</small></div>
+          <div class="bubble me">Happy to help. The kettle is great too.<small>You - 3 days ago</small></div>
+        </div></div></div>
+      <form id="chatForm" class="d-flex gap-2 mt-3">
+        <input id="chatInput" class="form-control" placeholder="Type your message..." autocomplete="off" maxlength="500">
+        <button class="btn btn-primary"><i class="bi bi-send"></i> Send</button>
+      </form>
+      <div class="small text-muted mt-2"><i class="bi bi-shield-check"></i> Chats are monitored by the admin to keep everyone safe.</div>
+    </div>
+  </div>
+</div>
+<footer class="bh-footer mt-5 py-4">
+  <div class="container d-flex flex-wrap justify-content-between gap-2 small">
+    <div><strong class="text-white">Barter Hub</strong> - exchange what you do not need for what you do. No buying, no selling.</div>
+    <div class="d-flex gap-3">
+      <a href="../about.html">About</a><a href="../contact.html">Contact</a><a href="../terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>

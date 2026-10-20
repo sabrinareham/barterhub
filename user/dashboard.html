@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Barter Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bh-navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="dashboard.html"><span class="brand-dot"><i class="bi bi-arrow-left-right"></i></span>Barter Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="browse.html">Browse</a></li>
+        <li class="nav-item"><a class="nav-link" href="add-item.html">Add item</a></li>
+        <li class="nav-item"><a class="nav-link" href="my-items.html">My items</a></li>
+        <li class="nav-item"><a class="nav-link" href="matches.html">Matches</a></li>
+        <li class="nav-item"><a class="nav-link" href="requests.html">Requests</a></li>
+        <li class="nav-item"><a class="nav-link" href="chat.html">Chat</a></li>
+      </ul>
+      <div class="dropdown">
+        <a class="btn btn-light border dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i> Ali Raza</a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person"></i> Profile and history</a></li>
+          <li><a class="dropdown-item" href="premium.html"><i class="bi bi-gem"></i> Premium</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="../index.php"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="page-head"><div class="container"><h1>Hello, Ali</h1><p class="text-muted mb-0 mt-1">Here is what is happening with your swaps.</p></div></div>
+
+<div class="container py-4">
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="card-body d-flex gap-3 align-items-center"><div class="stat-icon"><i class="bi bi-box-seam"></i></div><div><div class="stat-num">2</div><div class="small text-muted">My items</div></div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="card-body d-flex gap-3 align-items-center"><div class="stat-icon"><i class="bi bi-stars"></i></div><div><div class="stat-num">2</div><div class="small text-muted">New matches</div></div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="card-body d-flex gap-3 align-items-center"><div class="stat-icon"><i class="bi bi-inbox"></i></div><div><div class="stat-num">2</div><div class="small text-muted">Open requests</div></div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card stat-card"><div class="card-body d-flex gap-3 align-items-center"><div class="stat-icon"><i class="bi bi-check2-circle"></i></div><div><div class="stat-num">1</div><div class="small text-muted">Completed swaps</div></div></div></div></div>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card"><div class="card-header bg-white fw-semibold">Recent activity</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><i class="bi bi-inbox text-primary"></i> <strong>Sara Khan</strong> sent you a request for your Novels <span class="text-muted small float-end">2 hours ago</span></li>
+          <li class="list-group-item"><i class="bi bi-check-circle text-success"></i> <strong>Bilal Ahmed</strong> accepted your Speaker swap <span class="text-muted small float-end">Yesterday</span></li>
+          <li class="list-group-item"><i class="bi bi-chat-dots text-primary"></i> New message from Bilal Ahmed <span class="text-muted small float-end">Yesterday</span></li>
+          <li class="list-group-item"><i class="bi bi-star-fill text-warning"></i> Ayesha Noor rated you 5 stars <span class="text-muted small float-end">3 days ago</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card"><div class="card-body">
+        <h6>Quick actions</h6>
+        <div class="d-grid gap-2">
+          <a class="btn btn-primary" href="add-item.html"><i class="bi bi-plus-circle"></i> Add a new item</a>
+          <a class="btn btn-outline-primary" href="matches.html"><i class="bi bi-stars"></i> See my matches</a>
+          <a class="btn btn-outline-primary" href="requests.html"><i class="bi bi-inbox"></i> Manage requests</a>
+        </div>
+      </div></div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mt-5 mb-3"><h5 class="mb-0">Latest items <span class="small text-muted">(items the admin approved appear here too)</span></h5><a href="browse.html">Browse all</a></div>
+  <div class="row g-4" data-new-items="public">
+      <div class="col-sm-6 col-lg-4 item-col" data-title="Urdu &amp; English Novels (10 books)" data-cat="Books" data-cond="Good" data-city="Lahore" data-wants="A study table or a small bookshelf">
+        <div class="card item-card h-100 shadow-sm">
+          <div class="item-thumb cat-books"><i class="bi bi-book"></i></div>
+          <div class="card-body">
+            <span class="badge text-bg-light border">Books</span> <span class="badge text-bg-light border">Good</span>
+            <h6 class="card-title mt-2 mb-1">Urdu &amp; English Novels (10 books)</h6>
+            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Lahore &nbsp;<i class="bi bi-person"></i> Ali Raza</p>
+            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>A study table or a small bookshelf</strong></div>
+          </div>
+          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=1">View details</a></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4 item-col" data-title="Wooden Study Table" data-cat="Furniture" data-cond="Good" data-city="Faisalabad" data-wants="Novels or school / college textbooks">
+        <div class="card item-card h-100 shadow-sm">
+          <div class="item-thumb cat-furniture"><i class="bi bi-lamp"></i></div>
+          <div class="card-body">
+            <span class="badge text-bg-light border">Furniture</span> <span class="badge text-bg-light border">Good</span>
+            <h6 class="card-title mt-2 mb-1">Wooden Study Table</h6>
+            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Faisalabad &nbsp;<i class="bi bi-person"></i> Sara Khan</p>
+            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>Novels or school / college textbooks</strong></div>
+          </div>
+          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=2">View details</a></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4 item-col" data-title="Samsung Galaxy A12 (64 GB)" data-cat="Mobiles" data-cond="Fair" data-city="Multan" data-wants="A tablet or a smart watch">
+        <div class="card item-card h-100 shadow-sm">
+          <div class="item-thumb cat-mobiles"><i class="bi bi-phone"></i></div>
+          <div class="card-body">
+            <span class="badge text-bg-light border">Mobiles</span> <span class="badge text-bg-light border">Fair</span>
+            <h6 class="card-title mt-2 mb-1">Samsung Galaxy A12 (64 GB)</h6>
+            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Multan &nbsp;<i class="bi bi-person"></i> Hamza Ali</p>
+            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>A tablet or a smart watch</strong></div>
+          </div>
+          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=3">View details</a></div>
+        </div>
+      </div>
+  </div>
+</div>
+<footer class="bh-footer mt-5 py-4">
+  <div class="container d-flex flex-wrap justify-content-between gap-2 small">
+    <div><strong class="text-white">Barter Hub</strong> - exchange what you do not need for what you do. No buying, no selling.</div>
+    <div class="d-flex gap-3">
+      <a href="../about.html">About</a><a href="../contact.html">Contact</a><a href="../terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
