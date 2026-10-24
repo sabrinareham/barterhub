@@ -25,6 +25,7 @@ $navLinks = [
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="<?= BASE_URL ?>/assets/css/style.css" rel="stylesheet">
+  <?php require __DIR__ . '/csrf_script.php'; ?>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bh-navbar sticky-top">
@@ -56,6 +57,7 @@ $navLinks = [
               <?php endif; ?>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/dashboard.php"><i class="bi bi-speedometer2"></i> My dashboard</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/my-items.php"><i class="bi bi-box-seam"></i> My items</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/matches.php"><i class="bi bi-stars"></i> Matches</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/requests.php"><i class="bi bi-arrow-left-right"></i> Requests</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/chat.php"><i class="bi bi-chat-dots"></i> Chat</a></li>
               <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/profile.php"><i class="bi bi-person"></i> My profile</a></li>

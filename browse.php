@@ -86,6 +86,12 @@ if (!$notFound) {
     $items = $stmt->fetchAll();
 }
 
+// remember what people search for (the admin sees it in Searches)
+if ($q !== '' && !$notFound) {
+    $pdo->prepare('INSERT INTO search_log (term, user_id, result_count) VALUES (?, ?, ?)')
+        ->execute([mb_substr(mb_strtolower($q), 0, 100), $_SESSION['user_id'] ?? null, count($items)]);
+}
+
 $pageTitle = $current ? $current['name'] : 'Browse items';
 $active    = 'browse';
 require_once __DIR__ . '/includes/header.php';

@@ -11,17 +11,16 @@ $adminActive = $adminActive ?? '';
 // When we convert a page from .html to .php we change its name HERE, in one place.
 $adminLinks = [
     ['dashboard.php',   'speedometer2',     'Dashboard'],
-    ['activity.html',    'activity',         'Activity log'],
+    ['activity.php',    'activity',         'Activity log'],
     ['users.php',       'people',           'Users'],
     ['items.php',       'box-seam',         'Items'],
-    ['submissions.php',  'inbox',            'Item submissions'],
+    ['submissions.php', 'inbox',            'Item submissions'],
     ['exchanges.php',   'arrow-left-right', 'Exchanges'],
-    ['chats.html',       'chat-square-text', 'Chat monitor'],
-    ['searches.html',    'search',           'Searches'],
-    ['complaints.html',  'flag',             'Reports and complaints'],
-    ['categories.html',   'tags',             'Categories'],
-    ['payments.html',    'cash-coin',        'Payments'],
-    ['add-listing.html', 'star',             'Featured listing'],
+    ['chats.php',       'chat-square-text', 'Chat monitor'],
+    ['searches.php',    'search',           'Searches'],
+    ['complaints.php',  'flag',             'Reports and complaints'],
+    ['categories.php',  'tags',             'Categories'],
+    ['payments.php',    'cash-coin',        'Payments'],
 ];
 ?>
 <!DOCTYPE html>
@@ -33,6 +32,7 @@ $adminLinks = [
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link href="<?= BASE_URL ?>/assets/css/style.css" rel="stylesheet">
+    <?php require __DIR__ . '/csrf_script.php'; ?>
 </head>
 <body>
 <div class="admin-shell">

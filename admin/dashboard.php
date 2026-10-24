@@ -1,68 +1,71 @@
 <?php
-// user/dashboard.php - my summary (real numbers from the database)
+// admin/dashboard.php - real numbers + latest activity
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
-require_login();
+require_once __DIR__ . '/../includes/activity.php';
+require_admin();
 
-$userId = (int)$_SESSION['user_id'];
-
-// my items grouped by status: ['approved' => 3, 'pending' => 1]
-$stmt = $pdo->prepare('SELECT status, COUNT(*) FROM items WHERE user_id = ? GROUP BY status');
-$stmt->execute([$userId]);
-$itemCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
-// a helper that runs "SELECT COUNT(*) ... WHERE ... = my id" and returns the number
-function count_for($pdo, $sql, $userId) {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$userId, $userId]);
-    return (int)$stmt->fetchColumn();
+// run a "SELECT COUNT(*) ..." and return the number
+function dash_count($pdo, $sql) {
+    return (int)$pdo->query($sql)->fetchColumn();
 }
-$waitingForMe = count_for($pdo,
-    "SELECT COUNT(*) FROM exchange_requests
-      WHERE (owner_id = ? AND status = 'pending') OR (requester_id = ? AND status = 'countered')", $userId);
-$activeSwaps  = count_for($pdo,
-    "SELECT COUNT(*) FROM exchange_requests WHERE status = 'accepted' AND (requester_id = ? OR owner_id = ?)", $userId);
-$doneSwaps    = count_for($pdo,
-    "SELECT COUNT(*) FROM exchange_requests WHERE status = 'completed' AND (requester_id = ? OR owner_id = ?)", $userId);
 
-$stmt = $pdo->prepare('SELECT ROUND(AVG(stars), 1) AS avg_rating, COUNT(*) AS n FROM ratings WHERE rated_id = ?');
-$stmt->execute([$userId]);
-$rating = $stmt->fetch();
+$stats = [
+    ['people',          'Total users',          dash_count($pdo, "SELECT COUNT(*) FROM users")],
+    ['box-seam',        'Total items',          dash_count($pdo, "SELECT COUNT(*) FROM items")],
+    ['flag',            'Open reports',         dash_count($pdo, "SELECT COUNT(*) FROM reports WHERE status = 'open'")],
+    ['box-arrow-in-right', 'Logins today',      dash_count($pdo, "SELECT COUNT(*) FROM users WHERE DATE(last_login_at) = CURDATE()")],
+    ['arrow-left-right','Active exchanges',     dash_count($pdo, "SELECT COUNT(*) FROM exchange_requests WHERE status = 'accepted'")],
+    ['check-circle',    'Completed swaps',      dash_count($pdo, "SELECT COUNT(*) FROM exchange_requests WHERE status = 'completed'")],
+    ['inbox',           'New items to review',  dash_count($pdo, "SELECT COUNT(*) FROM items WHERE status = 'pending'")],
+    ['cash-coin',       'Income (premium later)', null],
+];
+$openReports = $stats[2][2];
+$toReview    = $stats[6][2];
+$unverified  = dash_count($pdo, "SELECT COUNT(*) FROM users WHERE role = 'user' AND status = 'active' AND is_verified = 0");
 
-$pageTitle = 'My dashboard';
-$active    = '';
-require_once __DIR__ . '/../includes/header.php';
+$feed = recent_activity($pdo, 8);
+
+$adminTitle  = 'Dashboard';
+$adminActive = 'dashboard.php';
+require_once __DIR__ . '/../includes/admin_header.php';
 ?>
-<div class="container py-4">
-  <h2 class="h4 mb-1">Hello, <?= e($_SESSION['user_name']) ?></h2>
-  <p class="text-muted">Here is what is happening with your items and exchanges.</p>
-
+<div class="p-3">
   <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3"><a class="card text-decoration-none h-100" href="<?= BASE_URL ?>/user/requests.php">
-      <div class="card-body"><div class="display-6 fw-bold <?= $waitingForMe > 0 ? 'text-danger' : '' ?>"><?= $waitingForMe ?></div>
-      <div class="small text-muted">Requests waiting for your answer</div></div></a></div>
-    <div class="col-6 col-lg-3"><a class="card text-decoration-none h-100" href="<?= BASE_URL ?>/user/chat.php">
-      <div class="card-body"><div class="display-6 fw-bold"><?= $activeSwaps ?></div>
-      <div class="small text-muted">Active exchanges (chat open)</div></div></a></div>
-    <div class="col-6 col-lg-3"><a class="card text-decoration-none h-100" href="<?= BASE_URL ?>/user/requests.php?tab=completed">
-      <div class="card-body"><div class="display-6 fw-bold"><?= $doneSwaps ?></div>
-      <div class="small text-muted">Completed swaps</div></div></a></div>
-    <div class="col-6 col-lg-3"><a class="card text-decoration-none h-100" href="<?= BASE_URL ?>/user/profile.php">
-      <div class="card-body"><div class="display-6 fw-bold">
-        <?php if ((int)$rating['n'] > 0): ?><i class="bi bi-star-fill text-warning fs-4"></i> <?= e($rating['avg_rating']) ?><?php else: ?>-<?php endif; ?></div>
-      <div class="small text-muted"><?= (int)$rating['n'] ?> rating<?= (int)$rating['n'] === 1 ? '' : 's' ?></div></div></a></div>
+    <?php foreach ($stats as $s): ?>
+      <div class="col-6 col-lg-3"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3">
+        <i class="bi bi-<?= e($s[0]) ?> fs-2 text-primary"></i>
+        <div><div class="fs-3 fw-bold"><?= $s[2] === null ? '--' : (int)$s[2] ?></div><div class="small text-muted"><?= e($s[1]) ?></div></div>
+      </div></div></div>
+    <?php endforeach; ?>
   </div>
 
-  <div class="card"><div class="card-header bg-white fw-semibold d-flex justify-content-between">
-    My items <a class="btn btn-sm btn-primary" href="<?= BASE_URL ?>/user/add-item.php">Add item</a></div>
-    <div class="card-body">
-      <?php foreach (['approved' => 'success', 'pending' => 'warning', 'rejected' => 'danger', 'exchanged' => 'secondary'] as $st => $color): ?>
-        <a class="btn btn-outline-<?= $color ?> me-2 mb-1" href="<?= BASE_URL ?>/user/my-items.php">
-          <?= e(ucfirst($st)) ?> <span class="badge text-bg-<?= $color ?>"><?= (int)($itemCounts[$st] ?? 0) ?></span></a>
-      <?php endforeach; ?>
+  <div class="row g-3">
+    <div class="col-lg-7">
+      <div class="card"><div class="card-header bg-white fw-semibold d-flex justify-content-between">
+        Live activity <a class="small" href="<?= BASE_URL ?>/admin/activity.php">See all</a></div>
+        <ul class="list-group list-group-flush">
+          <?php if (count($feed) === 0): ?><li class="list-group-item text-muted">Nothing has happened yet.</li><?php endif; ?>
+          <?php foreach ($feed as $row): [$icon, $text] = activity_line($row); ?>
+            <li class="list-group-item d-flex justify-content-between">
+              <span><i class="bi bi-<?= e($icon) ?> text-primary"></i> <?= $text ?></span>
+              <span class="small text-muted text-nowrap ms-2"><?= e(substr((string)$row['happened_at'], 5, 11)) ?></span>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card"><div class="card-header bg-white fw-semibold">Needs your attention</div>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action <?= $openReports ? 'text-danger' : '' ?>" href="<?= BASE_URL ?>/admin/complaints.php"><i class="bi bi-flag"></i> <?= $openReports ?> open report<?= $openReports === 1 ? '' : 's' ?></a>
+          <a class="list-group-item list-group-item-action" href="<?= BASE_URL ?>/admin/submissions.php"><i class="bi bi-inbox"></i> <?= $toReview ?> new item<?= $toReview === 1 ? '' : 's' ?> to review</a>
+          <a class="list-group-item list-group-item-action" href="<?= BASE_URL ?>/admin/users.php"><i class="bi bi-person-check"></i> <?= $unverified ?> user<?= $unverified === 1 ? '' : 's' ?> not verified yet</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/admin_footer.php'; ?>
