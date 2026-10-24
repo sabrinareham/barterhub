@@ -10,12 +10,12 @@ $adminActive = $adminActive ?? '';
 // Sidebar links: [file name, icon, label]
 // When we convert a page from .html to .php we change its name HERE, in one place.
 $adminLinks = [
-    ['dashboard.html',   'speedometer2',     'Dashboard'],
+    ['dashboard.php',   'speedometer2',     'Dashboard'],
     ['activity.html',    'activity',         'Activity log'],
-    ['users.html',       'people',           'Users'],
-    ['items.html',       'box-seam',         'Items'],
-    ['submissions.html', 'inbox',            'Item submissions'],
-    ['exchanges.html',   'arrow-left-right', 'Exchanges'],
+    ['users.php',       'people',           'Users'],
+    ['items.php',       'box-seam',         'Items'],
+    ['submissions.php',  'inbox',            'Item submissions'],
+    ['exchanges.php',   'arrow-left-right', 'Exchanges'],
     ['chats.html',       'chat-square-text', 'Chat monitor'],
     ['searches.html',    'search',           'Searches'],
     ['complaints.html',  'flag',             'Reports and complaints'],
@@ -49,6 +49,6 @@ $adminLinks = [
   <div class="admin-main">
     <div class="admin-top d-flex justify-content-between align-items-center">
       <h1 class="h5 mb-0"><?= e($adminTitle) ?></h1>
-      <a class="btn btn-outline-danger btn-sm" href="<?= BASE_URL ?>/admin/login.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      <a class="btn btn-outline-danger btn-sm" href="<?= BASE_URL ?>/auth/login.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
     <div class="admin-content">

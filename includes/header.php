@@ -9,7 +9,6 @@ $pageTitle = $pageTitle ?? 'Welcome';
 $active    = $active ?? '';
 
 // Navbar links: [key, file name, label]
-// When we convert a page from .html to .php we change its file name HERE, in one place.
 $navLinks = [
     ['home',    'index.php',    'Home'],
     ['browse',  'browse.php',   'Browse items'],
@@ -38,15 +37,32 @@ $navLinks = [
       <ul class="navbar-nav me-auto">
         <?php foreach ($navLinks as $link): ?>
           <li class="nav-item">
-            <a class="nav-link <?= $link[0] === $active ? 'active' : '' ?>" href="<?= BASE_URL ?>/<?= $link[1] ?>"><?= $link[2] ?></a>
+            <a class="nav-link text-nowrap <?= $link[0] === $active ? 'active' : '' ?>" href="<?= BASE_URL ?>/<?= $link[1] ?>"><?= $link[2] ?></a>
           </li>
         <?php endforeach; ?>
       </ul>
       <div class="d-flex gap-2 align-items-center">
         <?php if (is_logged_in()): ?>
-          <span class="small text-muted d-none d-lg-inline">Hello, <?= e($_SESSION['user_name']) ?></span>
-          <a class="btn btn-outline-primary" href="<?= e(account_home_url()) ?>">My account</a>
-          <a class="btn btn-primary" href="<?= BASE_URL ?>/auth/logout.php">Logout</a>
+          <a class="btn btn-warning text-nowrap" href="<?= BASE_URL ?>/user/add-item.php"><i class="bi bi-plus-lg"></i> Add item</a>
+          <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle text-nowrap" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i>
+              <span class="d-inline-block text-truncate align-bottom" style="max-width:130px"><?= e($_SESSION['user_name']) ?></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <?php if (($_SESSION['user_role'] ?? '') === 'admin'): ?>
+                <li><a class="dropdown-item" href="<?= e(account_home_url()) ?>"><i class="bi bi-shield-lock"></i> Admin panel</a></li>
+                <li><hr class="dropdown-divider"></li>
+              <?php endif; ?>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/dashboard.php"><i class="bi bi-speedometer2"></i> My dashboard</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/my-items.php"><i class="bi bi-box-seam"></i> My items</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/requests.php"><i class="bi bi-arrow-left-right"></i> Requests</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/chat.php"><i class="bi bi-chat-dots"></i> Chat</a></li>
+              <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/profile.php"><i class="bi bi-person"></i> My profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/auth/logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
+          </div>
         <?php else: ?>
           <a class="btn btn-outline-primary" href="<?= BASE_URL ?>/auth/login.php">Login</a>
           <a class="btn btn-primary" href="<?= BASE_URL ?>/auth/register.php">Register</a>

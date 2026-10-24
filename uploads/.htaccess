@@ -1,0 +1,4 @@
+# Nobody can run scripts from this folder, even if a bad file gets in
+<FilesMatch "\.(php|phtml|phar)$">
+  Require all denied
+</FilesMatch>

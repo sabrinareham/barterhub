@@ -158,7 +158,7 @@
       var next = params.get('next') || '';
       var safe = /^[a-z0-9\-_\/\.\?=&]+$/i.test(next) ? next : '';
       // a guest who was sent to login from an item page returns to that same item (now the user version)
-      window.location.href = safe.indexOf('item.html') === 0 ? '../user/' + safe : '../user/dashboard.html';
+      window.location.href = safe.indexOf('item.html') === 0 ? '../user/' + safe : '../user/dashboard.php';
     });
   }
   var registerForm = $('#registerForm');
@@ -205,7 +205,7 @@
         wantsCat: $('#iWantCat').value, wants: $('#iWantDesc').value.trim()
       };
       var list = getItems(); list.unshift(newItem); saveItems(list);   // goes to the admin first, NOT to the public pages
-      window.location.href = 'my-items.html?added=1';
+      window.location.href = 'my-items.php?added=1';
     });
   }
 

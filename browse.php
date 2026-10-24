@@ -1,6 +1,5 @@
 <?php
-// browse.php - public browse page.
-// The CATEGORY part is real (slugs + sub-categories). The item list arrives in Lesson 7.
+// browse.php - public browse page (categories + sub-categories + real approved items)
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/db.php';
@@ -9,7 +8,7 @@ require_once __DIR__ . '/includes/db.php';
 $slug = trim($_GET['category'] ?? '');   // e.g. browse.php?category=jwellery
 $q    = trim($_GET['q'] ?? '');          // e.g. browse.php?q=table
 
-// ---- 2. Load the visible category tree (small table, one query is enough) ----
+// ---- 2. Load the visible category tree ----
 $all = $pdo->query(
     'SELECT id, parent_id, name, slug, icon, description
        FROM categories
@@ -28,7 +27,6 @@ foreach ($all as $row) {
     }
 }
 foreach ($all as $row) {
-    // a sub-category is shown only when its parent is visible too
     if ($row['parent_id'] !== null && isset($tops[$row['parent_id']])) {
         $children[$row['parent_id']][] = $row;
         $bySlug[$row['slug']]          = $row;
@@ -38,7 +36,7 @@ foreach ($all as $row) {
 // ---- 3. Which category was chosen? ----
 $current     = null;
 $parent      = null;
-$categoryIds = [];      // every category id whose items we should show
+$categoryIds = [];
 $notFound    = false;
 
 if ($slug !== '') {
@@ -51,12 +49,41 @@ if ($slug !== '') {
 if ($current !== null) {
     $categoryIds[] = (int)$current['id'];
     if ($current['parent_id'] !== null) {
-        $parent = $tops[$current['parent_id']];             // a sub-category: remember its parent
+        $parent = $tops[$current['parent_id']];
     } else {
         foreach ($children[$current['id']] ?? [] as $child) {
-            $categoryIds[] = (int)$child['id'];             // a top-level category also covers its children
+            $categoryIds[] = (int)$child['id'];
         }
     }
+}
+
+// ---- 4. Load the approved items that match ----
+$where  = ["i.status = 'approved'", 'c.is_visible = 1'];
+$params = [];
+
+if ($current !== null) {
+    $marks   = implode(',', array_fill(0, count($categoryIds), '?'));
+    $where[] = "i.category_id IN ($marks)";
+    $params  = array_merge($params, $categoryIds);
+}
+if ($q !== '') {
+    $where[] = '(i.title LIKE ? OR i.wants LIKE ? OR i.description LIKE ?)';
+    $like    = '%' . $q . '%';
+    array_push($params, $like, $like, $like);
+}
+
+$items = [];
+if (!$notFound) {
+    $stmt = $pdo->prepare(
+        'SELECT i.id, i.title, i.wants, i.photo, i.item_condition, u.city, c.name AS category_name
+           FROM items i
+           JOIN users u      ON u.id = i.user_id
+           JOIN categories c ON c.id = i.category_id
+          WHERE ' . implode(' AND ', $where) . '
+          ORDER BY i.created_at DESC'
+    );
+    $stmt->execute($params);
+    $items = $stmt->fetchAll();
 }
 
 $pageTitle = $current ? $current['name'] : 'Browse items';
@@ -148,17 +175,21 @@ require_once __DIR__ . '/includes/header.php';
           <p class="small">Searching for: <span class="badge text-bg-light border"><?= e($q) ?></span></p>
         <?php endif; ?>
 
-        <!-- Items are not in the database yet (Lesson 7) -->
-        <div class="card"><div class="card-body text-center py-5">
-          <i class="bi bi-box-seam fs-1 text-muted"></i>
-          <h5 class="mt-2">No items to show yet</h5>
-          <p class="text-muted mb-0">Items will be saved in the database in Lesson 7. This page is already ready to filter them.</p>
-        </div></div>
+        <p class="small text-muted"><?= count($items) ?> item(s) found</p>
 
-        <?php if ($current): ?>
-          <div class="alert alert-light border small mt-3">
-            <strong>Developer note (remove in Lesson 7):</strong> the item query for this page will use
-            <code>WHERE category_id IN (<?= e(implode(', ', $categoryIds)) ?>)</code>
+        <?php if (count($items) === 0): ?>
+          <div class="card"><div class="card-body text-center py-5">
+            <i class="bi bi-box-seam fs-1 text-muted"></i>
+            <h5 class="mt-2">No items found</h5>
+            <p class="text-muted mb-0">Try another category or a different search word.</p>
+          </div></div>
+        <?php else: ?>
+          <div class="row g-3">
+            <?php foreach ($items as $item): ?>
+              <div class="col-sm-6 col-xl-4">
+                <?php require __DIR__ . '/includes/item_card.php'; ?>
+              </div>
+            <?php endforeach; ?>
           </div>
         <?php endif; ?>
 

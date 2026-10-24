@@ -8,7 +8,7 @@ Bootstrap and Bootstrap Icons load from a CDN (jsDelivr).
 
 ## Demo login
 - User: any email + password with 6+ characters (`auth/login.php`)
-- Admin: `admin/login.html` (any email + 6+ characters)
+- Admin: `auth/login.php` (any email + 6+ characters)
 
 ## Folder map (matches the backend folder plan)
 - `index.html, browse.php, item.html, about.html, contact.html, terms.html` - public pages (guest)
@@ -24,8 +24,8 @@ Nothing is stored on a server. Buttons only change what you see on the page.
 The only thing remembered is a newly added item (kept in your browser) so it shows in My items and Latest items.
 
 ## Item approval flow (admin decides what is public)
-1. User fills `user/add-item.html` -> item is saved as **pending**. Only that user sees it (My items: "Waiting for admin").
-2. Admin opens `admin/submissions.html` -> **Approve** (goes public) or **Reject** (with a reason the user can read).
+1. User fills `user/add-item.php` -> item is saved as **pending**. Only that user sees it (My items: "Waiting for admin").
+2. Admin opens `admin/submissions.php` -> **Approve** (goes public) or **Reject** (with a reason the user can read).
 3. Only **approved** items appear on the home page, Browse and the dashboard for everyone.
 
 To test this in one browser: add an item as a user, open the admin panel in the same browser and approve it.

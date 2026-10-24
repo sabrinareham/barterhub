@@ -1,8 +1,9 @@
 <?php
-// admin/categories.php - Categories and sub-categories: Create, Read, Update, Delete
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/auth.php';   // NEW
+require_admin();                                  // NEW: stops everyone who is not an admin
 
 // ------------------------------------------------------------------
 // Reads the add/edit form, checks it, and returns [cleanData, errors].

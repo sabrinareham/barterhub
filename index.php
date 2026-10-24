@@ -4,6 +4,17 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/db.php';
 
+// latest approved items for the home page
+$latest = $pdo->query(
+    "SELECT i.id, i.title, i.wants, i.photo, i.item_condition, u.city, c.name AS category_name
+       FROM items i
+       JOIN users u      ON u.id = i.user_id
+       JOIN categories c ON c.id = i.category_id
+      WHERE i.status = 'approved' AND c.is_visible = 1
+      ORDER BY i.created_at DESC
+      LIMIT 8"
+)->fetchAll();
+
 // READ: only the categories the admin left visible, A to Z
 $categories = $pdo->query('SELECT id, name, slug, icon, description FROM categories WHERE is_visible = 1 AND parent_id IS NULL ORDER BY sort_order, name')->fetchAll();
 
@@ -20,15 +31,13 @@ require_once __DIR__ . '/includes/header.php';
       <input class="form-control form-control-lg" name="q" placeholder="Search items, e.g. books, table, speaker">
       <button class="btn btn-warning btn-lg px-4" type="submit"><i class="bi bi-search"></i></button>
     </form>
-    <div class="mt-4"><a class="btn btn-light me-2" href="auth/register.php">Start swapping</a><a class="btn btn-outline-light" href="<?= BASE_URL ?>/browse.php">Browse items</a></div>
+    <div class="mt-4"><a class="btn btn-light me-2" href="<?= BASE_URL ?>/auth/register.php">Start swapping</a><a class="btn btn-outline-light" href="<?= BASE_URL ?>/browse.php">Browse items</a></div>
   </div>
 </section>
 
 <section class="container py-5">
   <h2 class="h4 fw-bold mb-3">Browse by category</h2>
-    <div class="row g-3">
-      <!-- ......................... -->
-    <div class="d-flex flex-nowrap overflow-auto gap-3 pb-3" style="scrollbar-width: thin;">
+  <div class="d-flex flex-nowrap overflow-auto gap-3 pb-3" style="scrollbar-width: thin;">
     <?php if (count($categories) === 0): ?>
       <p class="text-muted">No categories yet.</p>
     <?php endif; ?>
@@ -41,87 +50,25 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     <?php endforeach; ?>
   </div>
-  <!-- ............................... -->
 </section>
 
 <section class="container pb-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 fw-bold mb-0">Latest items</h2><a href="<?= BASE_URL ?>/browse.php">See all <i class="bi bi-arrow-right"></i></a>
+    <h2 class="h4 fw-bold mb-0">Latest items</h2>
+    <a href="<?= BASE_URL ?>/browse.php">See all <i class="bi bi-arrow-right"></i></a>
   </div>
-  <div class="row g-4" data-new-items="public">
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Urdu &amp; English Novels (10 books)" data-cat="Books" data-cond="Good" data-city="Lahore" data-wants="A study table or a small bookshelf">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-books"><i class="bi bi-book"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Books</span> <span class="badge text-bg-light border">Good</span>
-            <h6 class="card-title mt-2 mb-1">Urdu &amp; English Novels (10 books)</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Lahore &nbsp;<i class="bi bi-person"></i> Ali Raza</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>A study table or a small bookshelf</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=1">View details</a></div>
+
+  <?php if (count($latest) === 0): ?>
+    <p class="text-muted">No items have been approved yet.</p>
+  <?php else: ?>
+    <div class="row g-3">
+      <?php foreach ($latest as $item): ?>
+        <div class="col-6 col-md-4 col-lg-3">
+          <?php require __DIR__ . '/includes/item_card.php'; ?>
         </div>
-      </div>
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Wooden Study Table" data-cat="Furniture" data-cond="Good" data-city="Faisalabad" data-wants="Novels or school / college textbooks">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-furniture"><i class="bi bi-lamp"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Furniture</span> <span class="badge text-bg-light border">Good</span>
-            <h6 class="card-title mt-2 mb-1">Wooden Study Table</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Faisalabad &nbsp;<i class="bi bi-person"></i> Sara Khan</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>Novels or school / college textbooks</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=2">View details</a></div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Samsung Galaxy A12 (64 GB)" data-cat="Mobiles" data-cond="Fair" data-city="Multan" data-wants="A tablet or a smart watch">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-mobiles"><i class="bi bi-phone"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Mobiles</span> <span class="badge text-bg-light border">Fair</span>
-            <h6 class="card-title mt-2 mb-1">Samsung Galaxy A12 (64 GB)</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Multan &nbsp;<i class="bi bi-person"></i> Hamza Ali</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>A tablet or a smart watch</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=3">View details</a></div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Electric Kettle 1.7 L" data-cat="Kitchen" data-cond="New" data-city="Karachi" data-wants="A blender or a toaster">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-kitchen"><i class="bi bi-cup-hot"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Kitchen</span> <span class="badge text-bg-light border">New</span>
-            <h6 class="card-title mt-2 mb-1">Electric Kettle 1.7 L</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Karachi &nbsp;<i class="bi bi-person"></i> Ayesha Noor</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>A blender or a toaster</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=5">View details</a></div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Building Blocks Set (200 pcs)" data-cat="Toys" data-cond="Good" data-city="Islamabad" data-wants="Children story books">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-toys"><i class="bi bi-controller"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Toys</span> <span class="badge text-bg-light border">Good</span>
-            <h6 class="card-title mt-2 mb-1">Building Blocks Set (200 pcs)</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Islamabad &nbsp;<i class="bi bi-person"></i> Zara Malik</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>Children story books</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=6">View details</a></div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-4 item-col" data-title="Winter Jacket (Size M)" data-cat="Clothing" data-cond="Like New" data-city="Rawalpindi" data-wants="Sports shoes, size 9">
-        <div class="card item-card h-100 shadow-sm">
-          <div class="item-thumb cat-clothing"><i class="bi bi-handbag"></i></div>
-          <div class="card-body">
-            <span class="badge text-bg-light border">Clothing</span> <span class="badge text-bg-light border">Like New</span>
-            <h6 class="card-title mt-2 mb-1">Winter Jacket (Size M)</h6>
-            <p class="small text-muted mb-2"><i class="bi bi-geo-alt"></i> Rawalpindi &nbsp;<i class="bi bi-person"></i> Usman Tariq</p>
-            <div class="swap-box small"><i class="bi bi-arrow-left-right"></i> Wants: <strong>Sports shoes, size 9</strong></div>
-          </div>
-          <div class="card-footer bg-white border-0"><a class="btn btn-outline-primary btn-sm w-100" href="item.html?id=7">View details</a></div>
-        </div>
-      </div>
-  </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
 </section>
 
 <section class="container py-5">
