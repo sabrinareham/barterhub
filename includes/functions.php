@@ -23,6 +23,7 @@ function get_flash() {
     }
     $flash = $_SESSION['flash'];
     unset($_SESSION['flash']);   // show only once
+    $GLOBALS['bh_flash'] = $flash;   // keep a copy so render_flash() can still show it as a pop-up
     return $flash;
 }
 

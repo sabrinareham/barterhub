@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/chat_files.php';
 require_login();
 
 $userId    = (int)$_SESSION['user_id'];
@@ -33,23 +34,56 @@ if ($requestId > 0) {
 
     $otherName = ((int)$chat['owner_id'] === $userId) ? $chat['requester_name'] : $chat['owner_name'];
 
-    // ---- send a message (only while the exchange is still open) ----
+    // ---- tiny answer for the auto-refresh script: "what is the newest message number?" ----
+    if (isset($_GET['latest'])) {
+        session_write_close();
+        $stmt = $pdo->prepare('SELECT COALESCE(MAX(id), 0) FROM messages WHERE request_id = ?');
+        $stmt->execute([$requestId]);
+        header('Content-Type: application/json');
+        header('Cache-Control: no-store');
+        echo json_encode(['last' => (int)$stmt->fetchColumn()]);
+        exit;
+    }
+
+    // ---- send a message and/or a file (only while the exchange is still open) ----
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $body = trim($_POST['body'] ?? '');
+        $body    = trim($_POST['body'] ?? '');
+        $hasFile = isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE;
+
         if ($chat['status'] !== 'accepted') {
             set_flash('danger', 'This exchange is completed. The chat is read-only.');
-        } elseif ($body === '' || mb_strlen($body) > 500) {
-            set_flash('danger', 'Write a message of 1 to 500 characters.');
+        } elseif ($body === '' && !$hasFile) {
+            set_flash('danger', 'Write a message or choose a file.');
+        } elseif (mb_strlen($body) > 500) {
+            set_flash('danger', 'A message can have 500 characters at most.');
         } else {
-            $stmt = $pdo->prepare('INSERT INTO messages (request_id, sender_id, body) VALUES (?, ?, ?)');
-            $stmt->execute([$requestId, $userId, $body]);
+            $file = null;
+            if ($hasFile) {
+                $file = chat_save_upload($_FILES['file']);
+                if (isset($file['error'])) {
+                    set_flash('danger', $file['error']);
+                    redirect(BASE_URL . '/user/chat.php?request=' . $requestId);
+                }
+            }
+            try {
+                $stmt = $pdo->prepare(
+                    'INSERT INTO messages (request_id, sender_id, body, file_path, file_name, file_type, file_size)
+                     VALUES (?, ?, ?, ?, ?, ?, ?)'
+                );
+                $stmt->execute([$requestId, $userId, $body,
+                    $file['path'] ?? null, $file['name'] ?? null, $file['type'] ?? null, $file['size'] ?? null]);
+            } catch (PDOException $ex) {
+                if ($file) { @unlink(chat_dir() . '/' . $file['path']); }   // do not keep a file with no message
+                throw $ex;
+            }
         }
         redirect(BASE_URL . '/user/chat.php?request=' . $requestId);
     }
 
-    $stmt = $pdo->prepare('SELECT sender_id, body, created_at FROM messages WHERE request_id = ? ORDER BY id ASC');
+    $stmt = $pdo->prepare('SELECT id, sender_id, body, created_at, file_path, file_name, file_type, file_size FROM messages WHERE request_id = ? ORDER BY id ASC');
     $stmt->execute([$requestId]);
     $messages = $stmt->fetchAll();
+    $lastId   = count($messages) ? (int)end($messages)['id'] : 0;
 
     $pageTitle = 'Chat with ' . $otherName;
     $active    = '';
@@ -65,7 +99,7 @@ if ($requestId > 0) {
         <a class="btn btn-outline-primary btn-sm" href="<?= BASE_URL ?>/user/requests.php?tab=<?= $chat['status'] === 'completed' ? 'completed' : ((int)$chat['owner_id'] === $userId ? 'received' : 'sent') ?>"><?= $chat['status'] === 'completed' ? 'Back to requests' : 'Go to request to complete' ?></a>
       </div>
 
-      <div class="card"><div class="card-body bg-light" style="min-height:260px;max-height:480px;overflow:auto">
+      <div class="card"><div class="card-body bg-light" id="chatBox" style="min-height:260px;max-height:480px;overflow:auto">
         <?php if (count($messages) === 0): ?>
           <p class="text-muted text-center my-5">No messages yet. Say hello and agree on a place to meet.</p>
         <?php endif; ?>
@@ -73,7 +107,8 @@ if ($requestId > 0) {
           <?php $mine = (int)$m['sender_id'] === $userId; ?>
           <div class="d-flex <?= $mine ? 'justify-content-end' : 'justify-content-start' ?> mb-2">
             <div class="rounded px-3 py-2 <?= $mine ? 'bg-primary text-white' : 'bg-white border' ?>" style="max-width:75%">
-              <div><?= nl2br(e($m['body'])) ?></div>
+              <?= render_attachment($m) ?>
+              <?php if ($m['body'] !== ''): ?><div class="<?= $m['file_path'] ? 'mt-2' : '' ?>"><?= nl2br(e($m['body'])) ?></div><?php endif; ?>
               <div class="small <?= $mine ? 'text-white-50' : 'text-muted' ?>"><?= $mine ? 'You' : e($otherName) ?> · <?= e($m['created_at']) ?></div>
             </div>
           </div>
@@ -81,11 +116,63 @@ if ($requestId > 0) {
       </div></div>
 
       <?php if ($chat['status'] === 'accepted'): ?>
-        <form method="post" class="d-flex gap-2 mt-3">
-          <input class="form-control" name="body" maxlength="500" placeholder="Type a message" autocomplete="off" required>
-          <button class="btn btn-primary"><i class="bi bi-send"></i></button>
+        <form method="post" enctype="multipart/form-data" class="mt-3" id="chatForm">
+          <div class="d-flex gap-2">
+            <label class="btn btn-outline-secondary mb-0" title="Attach a file">
+              <i class="bi bi-paperclip"></i>
+              <input type="file" name="file" id="chatFile" hidden
+                     accept=".txt,.csv,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.m4a,.mp4,.webm,.mov">
+            </label>
+            <input class="form-control" name="body" id="chatText" maxlength="500" placeholder="Type a message" autocomplete="off">
+            <button class="btn btn-primary"><i class="bi bi-send"></i></button>
+          </div>
+          <div class="small mt-2 d-none" id="chatPicked">
+            <i class="bi bi-paperclip"></i> <span id="chatPickedName"></span>
+            <a href="#" id="chatPickedClear" class="ms-2 text-danger">remove</a>
+          </div>
         </form>
-        <div class="small text-muted mt-2">New messages appear when you reload the page.</div>
+        <div class="small text-muted mt-2" id="chatHint">New messages appear by themselves. Files up to 10 MB: text, PDF, Office, zip, pictures, audio, video.</div>
+        <script>
+          (function () {
+            var box = document.getElementById('chatBox');
+            box.scrollTop = box.scrollHeight;                       // show the newest message
+
+            var file = document.getElementById('chatFile');
+            var text = document.getElementById('chatText');
+            var picked = document.getElementById('chatPicked');
+            file.addEventListener('change', function () {
+              if (file.files.length && file.files[0].size > 10 * 1024 * 1024) {
+                bhToast('That file is too big. The limit is 10 MB.', 'danger', 2000, 'top');
+                file.value = '';
+              }
+              if (file.files.length) {
+                document.getElementById('chatPickedName').textContent = file.files[0].name;
+                picked.classList.remove('d-none');
+              } else {
+                picked.classList.add('d-none');
+              }
+            });
+            document.getElementById('chatPickedClear').addEventListener('click', function (ev) {
+              ev.preventDefault(); file.value = ''; picked.classList.add('d-none');
+            });
+
+            // every 4 seconds: is there a newer message? then reload (unless you are in the middle of typing)
+            var lastId = <?= (int)$lastId ?>;
+            setInterval(function () {
+              fetch('<?= BASE_URL ?>/user/chat.php?request=<?= (int)$requestId ?>&latest=1', { credentials: 'same-origin', cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                  if (d.last <= lastId) { return; }
+                  if (text.value.trim() === '' && file.files.length === 0) {
+                    location.reload();
+                  } else {
+                    document.getElementById('chatHint').innerHTML = '<a href="">New message - click to load it</a> (what you typed will be cleared)';
+                  }
+                })
+                .catch(function () {});
+            }, 4000);
+          })();
+        </script>
       <?php else: ?>
         <div class="alert alert-secondary mt-3 mb-0">This exchange is completed, so the chat is read-only.</div>
       <?php endif; ?>

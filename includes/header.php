@@ -4,6 +4,7 @@
 //   $pageTitle -> text for the browser tab
 //   $active    -> key of the navbar link to highlight ('home', 'browse', 'about', 'contact')
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/flash.php';
 
 $pageTitle = $pageTitle ?? 'Welcome';
 $active    = $active ?? '';
@@ -12,8 +13,8 @@ $active    = $active ?? '';
 $navLinks = [
     ['home',    'index.php',    'Home'],
     ['browse',  'browse.php',   'Browse items'],
-    ['about',   'about.html',   'About'],
-    ['contact', 'contact.html', 'Contact'],
+    ['about',   'about.php',    'About'],
+    ['contact', 'contact.php',  'Contact'],
 ];
 ?>
 <!DOCTYPE html>
@@ -74,9 +75,4 @@ $navLinks = [
   </div>
 </nav>
 
-<?php $flash = get_flash(); ?>
-<?php if ($flash): ?>
-  <div class="container mt-3">
-    <div class="alert alert-<?= e($flash['type']) ?> mb-0"><?= e($flash['message']) ?></div>
-  </div>
-<?php endif; ?>
+<?php render_flash(); ?>

@@ -2,9 +2,9 @@
   <div class="container d-flex flex-wrap justify-content-between gap-2 small">
     <div><strong class="text-white"><?= SITE_NAME ?></strong> - exchange what you do not need for what you do. No buying, no selling.</div>
     <div class="d-flex gap-3">
-      <a href="<?= BASE_URL ?>/about.html">About</a>
-      <a href="<?= BASE_URL ?>/contact.html">Contact</a>
-      <a href="<?= BASE_URL ?>/terms.html">Terms</a>
+      <a href="<?= BASE_URL ?>/about.php">About</a>
+      <a href="<?= BASE_URL ?>/contact.php">Contact</a>
+      <a href="<?= BASE_URL ?>/terms.php">Terms</a>
     </div>
   </div>
 </footer>
